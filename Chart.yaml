@@ -1,0 +1,13 @@
+apiVersion: v2
+name: teamcity
+description: A Helm chart to install a simple TeamCity installation
+icon: https://cdn.freebiesupply.com/logos/large/2x/teamcity-icon-logo-svg-vector.svg
+type: application
+version: 0.1.0
+appVersion: 2020.1.4
+sources:
+  - https://github.com/codaglobal/teamcity_helm
+maintainers:
+  - name: Scott Eppler
+    email: seppler@presidio.com
+    url: https://github.com/audioboxer217/

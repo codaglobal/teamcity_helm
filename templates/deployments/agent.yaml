@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-agent"
+  labels:
+    app: "{{ .Chart.Name }}-agent"
+spec:
+  replicas: {{ .Values.agentReplicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}-agent"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}-agent"
+    spec:
+      serviceAccountName: {{ include "teamcity.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: "{{ .Chart.Name }}-agent"
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.agent.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: SERVER_URL
+          value: "{{ include "teamcity.fullname" . }}:8111"
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: teamcity-config
+          mountPath: /data/teamcity_agent/conf
+      volumes:
+      - name: teamcity-config
+      {{- if .Values.pvc.data }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.config }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end -}}
