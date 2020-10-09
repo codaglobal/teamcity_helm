@@ -10,5 +10,11 @@ By default, it uses EmptyDir for Volumes and Ingress is disabled.
 - ingress.enabled: Set to true to enable Ingress
 - ingress.hosts: Array of Host entries for Ingress
 
-# TODO
-Add this as a packaged Chart with install instructions
+# Install
+- Add Coda Charts Helm Repo
+
+  `helm repo add coda-charts https://codaglobal.github.io/coda-charts/`
+
+- Install with Helm
+
+  `helm install teamcity coda-charts/teamcity`
